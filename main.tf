@@ -29,3 +29,13 @@ resource "aws_route_table_association" "association" {
   subnet_id      = aws_subnet.main.*.id[count.index]
   route_table_id = aws_route_table.route_table.id
 }
+
+resource "aws_route" "internet_gw_route" {
+  # if internet gw value is true the condition is to run this 1 time else 0 time
+  count                     = var.internet_gw ? 1 : 0
+  route_table_id            = aws_route_table.route_table.id
+  destination_cidr_block    = "0.0.0.0/0"
+  # we are declaring gw id here and getting input from outputs of vpc module
+  gateway_id = var.internet_gw_id
+
+}
